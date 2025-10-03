@@ -10,6 +10,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-mulish: var(--font-mulish);
+  --font-volkhov: var(--font-volkhov);
+  --font-open-sans: var(--font-open-sans);
+  --font-poppins: var(--font-poppins);
 }
 
 @media (prefers-color-scheme: dark) {
