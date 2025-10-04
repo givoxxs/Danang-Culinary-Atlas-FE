@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mulish, Open_Sans, Volkhov, Poppins } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
 const mulish = Mulish({
   subsets: ["latin"],
@@ -19,7 +20,11 @@ const volkhov = Volkhov({
   display: "swap",
   weight: ["400", "700"], 
 });
-
+const nicoMoji = localFont({
+  src: "../../public/fonts/NicoMoji-Regular.ttf",
+  variable: "--font-nicomoji",
+  display: "swap",
+});
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
@@ -52,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${mulish.variable} ${openSans.variable} ${volkhov.variable} ${poppins.variable} antialiased`}
+        className={`${mulish.variable} ${openSans.variable} ${volkhov.variable} ${poppins.variable} ${nicoMoji.variable} antialiased`}
       >
         {children}
       </body>

@@ -9,6 +9,10 @@ export default function Home() {
       <div className="font-volkhov font-bold">
                 This is the help page.
             </div>
+            <h2 className="font-nicomoji text-2xl font-normal">
+  🍣 Danang Culinary Atlas
+</h2>
+
     </div>
   );
 }
