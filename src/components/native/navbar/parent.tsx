@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import MobileMenu from './mobile';
 
 export default function Header() {
   return (
@@ -61,9 +62,7 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden p-2 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
-          <Menu className="w-6 h-6 text-[#495560]" />
-        </button>
+        <MobileMenu /> 
       </div>
     </header>
   );
