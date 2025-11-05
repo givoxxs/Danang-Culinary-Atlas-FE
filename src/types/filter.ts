@@ -1,0 +1,18 @@
+// Types
+interface FilterState {
+  priceRange: string[];
+  cuisineTypes: string[];
+  minRating: number | null;
+}
+
+interface FilterSideBarProps {
+  filters: FilterState;
+  onFilterChange: (filters: Partial<FilterState>) => void;
+}
+
+interface FilterOption {
+  label: string;
+  value: string;
+  count: number;
+}
+export type { FilterState, FilterSideBarProps, FilterOption };
