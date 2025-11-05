@@ -1,0 +1,121 @@
+# Danang Culinary Atlas - AI Coding Guidelines
+
+## Project Overview
+Next.js 15 restaurant discovery app for Danang, Vietnam with interactive mapping, search/filter, and authentication. Uses App Router with route groups and MapLibre for mapping.
+
+## Architecture Patterns
+
+### Route Organization
+- **Route Groups**: `(culinary-atlas)` wraps authenticated pages with shared layout (`src/app/(culinary-atlas)/layout.tsx`)
+- **Nested Routes**: `(routes)` subfolder contains actual page routes (`/atlas`, `/restaurants`, `/dishes`, `/login`)
+- Layout hierarchy: Root layout → Route group layout → Page
+- Route group layouts inject `<AuthProvider>`, `<Header>`, `<Footer>` around children
+
+### State Management Strategy
+- **Context API**: Authentication state via `AuthContext` (`src/contexts/AuthContext.tsx`)
+- **Local useState**: Component-level state for filters, pagination, view modes
+- **URL State Sync**: Search params managed with `useSearchParams()` for page/sort (see `src/app/(culinary-atlas)/(routes)/restaurants/page.tsx`)
+- **Redux Toolkit**: Configured but minimal usage (`src/stores/index.ts`)
+- **Mock Data**: Static data in `src/stores/mockRestaurants.ts` until backend integration
+
+### API & Data Layer
+- **Axios Instance**: `src/helpers/axios/index.tsx` with interceptors for auth tokens and 401 handling
+- **API Config**: Centralized endpoints in `src/configs/api.ts` with `API_ENDPOINTS` constants
+- **Service Layer**: `src/services/auth.ts` wraps API calls with consistent error handling
+- **Environment**: `NEXT_PUBLIC_APP_API_URL` env var for backend URL (defaults to `http://178.128.208.78:8081/api/v1`)
+
+### Authentication Flow
+1. Login stores JWT token + roles in localStorage (`src/contexts/AuthContext.tsx`)
+2. Axios interceptor attaches `Authorization: Bearer <token>` to requests
+3. Role-based routing: ADMIN → `/restaurants`, VENDOR → `/vendor-dashboard`, else → `/`
+4. 401 responses auto-clear auth and redirect to `/login`
+
+## Component Patterns
+
+### UI Components (shadcn/ui)
+- Base components: `src/components/ui/` (Button, Input, NavigationMenu, Sheet, ScrollArea)
+- Use `buttonVariants` from CVA for variant styling
+- Radix UI primitives for accessibility
+
+### Feature Components
+- **Page-Specific**: Colocated in `components/` subdirectories (e.g., `/atlas/components/RestaurantMap.tsx`)
+- **Shared**: `src/components/restaurants/` for reusable cards and ratings
+- **Layout**: `src/components/{navbar,footer,gallery}/index.tsx` for global UI
+
+### Map Integration (MapLibre)
+- Maps use `react-map-gl/maplibre` wrapper, NOT vanilla Mapbox GL
+- Map styles: Local JSON files in `/public/map-styles/` (dark-matter, positron, voyager)
+- Style imports: `MAP_STYLES` constant in `src/styles/map-styles.ts`
+- Center on Danang: `{longitude: 108.2022, latitude: 16.0544, zoom: 13}`
+- Custom markers: `<RestaurantMarker>` components with `<Marker>` from react-map-gl
+
+## Styling Conventions
+
+### Tailwind Setup
+- **CSS Variables**: Custom font families via CSS variables in `globals.css`
+- **Font Loading**: Next.js `next/font` for Google Fonts (Mulish, Volkhov, Poppins) + local font (NicoMoji)
+- **Utility-First**: Inline Tailwind classes, no separate CSS modules
+- **Responsive**: Mobile-first breakpoints (`md:`, `lg:`)
+
+### Font Usage
+- `font-mulish`: Body text and UI elements
+- `font-volkhov`: Headings and decorative text
+- `font-poppins`: Alternative headings
+- `font-nicomoji`: Special branding (local TTF in `/public/fonts/`)
+
+## Development Workflows
+
+### Running the App
+```bash
+npm run dev          # Dev server with Turbopack (port 3000)
+npm run build        # Production build with Turbopack
+npm start            # Production server
+npm run lint         # ESLint check
+```
+
+### Common Patterns
+- **Client Components**: Add `"use client"` for hooks (useState, useRouter, useSearchParams, useContext)
+- **Suspense Boundaries**: Wrap `useSearchParams()` components in `<Suspense>` (see restaurants page)
+- **Memoization**: Use `useMemo` for expensive filters/sorts, `useCallback` for handlers passed to children
+- **Type Safety**: Import types from `src/types/` (restaurant.ts, dish.ts, filter.ts, sort-option.ts, view-mode.ts)
+
+### Image Handling
+- Remote images: Unsplash URLs allowed in `next.config.ts` via `remotePatterns`
+- Next.js `<Image>` component for optimization
+- Static assets: `/public/images/` and `/public/icons/`
+
+## Key Files Reference
+
+| Purpose | File Path |
+|---------|-----------|
+| Auth logic & context | `src/contexts/AuthContext.tsx` |
+| Axios setup & interceptors | `src/helpers/axios/index.tsx` |
+| API endpoint constants | `src/configs/api.ts` |
+| Restaurant type definitions | `src/types/restaurant.ts` |
+| Mock data for development | `src/stores/mockRestaurants.ts` |
+| Map styles config | `src/styles/map-styles.ts` |
+| Shared UI primitives | `src/components/ui/` |
+| Route group layout | `src/app/(culinary-atlas)/layout.tsx` |
+
+## Critical Dependencies
+- **Next.js 15.5.4**: App Router with Turbopack
+- **React 19.1.0**: Latest stable
+- **MapLibre GL 5.9.0**: Open-source map renderer (NOT Mapbox)
+- **react-map-gl 8.1.0**: React wrapper for MapLibre
+- **Redux Toolkit 2.9.2**: State management (minimal usage)
+- **Axios 1.13.1**: HTTP client with interceptors
+- **jwt-decode 4.0.0**: Token parsing
+- **Radix UI**: Accessible component primitives
+- **Tailwind CSS 4**: Utility-first styling
+
+## Testing & Debugging
+- No test framework configured yet
+- Use browser DevTools for client-side debugging
+- Check Network tab for API calls (base URL in console logs)
+- Auth token stored in localStorage as `token` and `roles`
+
+## Project-Specific Notes
+- Currently using mock data; real API integration in progress
+- Role-based access not fully implemented (VENDOR dashboard missing)
+- Redux store exists but state primarily in Context/local
+- Map markers link to restaurant detail pages (`/restaurants/[id]`)
