@@ -1,4 +1,4 @@
-# Dependencies Stage
+# Build Stage for Next.js Application
 FROM node:21-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
@@ -17,7 +17,7 @@ ARG NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 ENV NEXT_PUBLIC_APP_API_URL=$NEXT_PUBLIC_APP_API_URL
 ENV NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=$NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 
-# Build with standalone output
+# Build without turbopack for production
 RUN npm run build
 
 # Production Stage
@@ -26,21 +26,19 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Copy necessary files for standalone output
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-# Copy standalone output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+    adduser --system --uid 1001 nextjs && \
+    chown -R nextjs:nodejs /app
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Use standalone server
 CMD ["node", "server.js"]
