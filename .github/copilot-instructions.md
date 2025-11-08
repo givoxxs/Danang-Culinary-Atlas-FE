@@ -22,11 +22,11 @@ Next.js 15 restaurant discovery app for Danang, Vietnam with interactive mapping
 - **Axios Instance**: `src/helpers/axios/index.tsx` with interceptors for auth tokens and 401 handling
 - **API Config**: Centralized endpoints in `src/configs/api.ts` with `API_ENDPOINTS` constants
 - **Service Layer**: `src/services/auth.ts` wraps API calls with consistent error handling
-- **Environment**: `NEXT_PUBLIC_APP_API_URL` env var for backend URL (defaults to `http://178.128.208.78:8081/api/v1`)
+- **Environment**: `NEXT_PUBLIC_APP_API_URL` env var for backend URL 
 
 ### Authentication Flow
 1. Login stores JWT token + roles in localStorage (`src/contexts/AuthContext.tsx`)
-2. Axios interceptor attaches `Authorization: Bearer <token>` to requests
+2. Axios interceptor attaches `Authorization: Bearer <token>` to requßßßests
 3. Role-based routing: ADMIN → `/restaurants`, VENDOR → `/vendor-dashboard`, else → `/`
 4. 401 responses auto-clear auth and redirect to `/login`
 

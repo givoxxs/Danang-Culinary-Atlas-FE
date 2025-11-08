@@ -1,8 +1,6 @@
 ---
 alwaysApply: true
 ---
-# Always answer in Vietnamese
-
 # Danang Culinary Atlas - AI Coding Guidelines
 
 ## Project Overview
@@ -31,7 +29,7 @@ Next.js 15 restaurant discovery app for Danang, Vietnam with interactive mapping
 
 ### Authentication Flow
 1. Login stores JWT token + roles in localStorage (`src/contexts/AuthContext.tsx`)
-2. Axios interceptor attaches `Authorization: Bearer <token>` to requests
+2. Axios interceptor attaches `Authorization: Bearer <token>` to requßßßests
 3. Role-based routing: ADMIN → `/restaurants`, VENDOR → `/vendor-dashboard`, else → `/`
 4. 401 responses auto-clear auth and redirect to `/login`
 
@@ -124,8 +122,3 @@ npm run lint         # ESLint check
 - Role-based access not fully implemented (VENDOR dashboard missing)
 - Redux store exists but state primarily in Context/local
 - Map markers link to restaurant detail pages (`/restaurants/[id]`)
-
-## Precision and traceability
-- Always cite where information or logic comes from (file name, class, or line number).
-- If you refer to external documentation, mention the exact function/class and link if available.
-
